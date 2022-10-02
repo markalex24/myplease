@@ -1,0 +1,1241 @@
+rm -rf instal*
+rm -rf .instal*
+
+system_update () {
+sudo timedatectl set-timezone Asia/Manila
+timedatectl
+apt-get update -y
+sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
+sudo ufw disable
+if [[ $(lsb_release -rs) == "22"* ]]; then
+	systemctl restart packagekit.service udisks2.service
+	sudo DEBIAN_FRONTEND=noninteractive apt install python2 -y
+elif [[ $(lsb_release -rs) == "21"* ]]; then
+	/etc/needrestart/restart.d/dbus.service
+	systemctl restart irqbalance.service ModemManager.service multipathd.service packagekit.service polkit.service ssh.service systemd-logind.service udisks2.service unattended-upgrades.service user@0.service
+	sudo DEBIAN_FRONTEND=noninteractive apt install python -y
+	
+elif [[ $(lsb_release -rs) == "18"* ]] || [[ $(lsb_release -rs) == "20"* ]]; then
+	DEBIAN_FRONTEND=noninteractive apt-get full-upgrade -q -y -u  -o Dpkg::Options::="--force-confdef" --allow-downgrades --allow-remove-essential --allow-change-held-packages --allow-unauthenticated
+	apt install python -y
+else
+	apt install python -y
+fi
+
+sudo DEBIAN_FRONTEND=noninteractive apt-get install netcat screen sudo mysql-client unzip build-essential curl build-essential php net-tools git lsof cmake make libwrap0-dev libpam0g-dev libdbus-1-dev libreadline-dev libnl-route-3-dev libpcl1-dev libopts25-dev autogen libgnutls28-dev libseccomp-dev libhttp-parser-dev libapache2-mod-php gcc tmux php-mysqli php-mysql php-gd php-mbstring -y
+sed -i 's/Listen 80/Listen 81/g' /etc/apache2/ports.conf
+service apache2 restart
+
+
+}
+
+install_stunnel() {
+sudo DEBIAN_FRONTEND=noninteractive apt-get install stunnel4 -y
+sed -i 's/ENABLED=0/ENABLED=1/g' /etc/default/stunnel4
+/bin/cat <<"EOM" > /etc/stunnel/stunnel.pem
+-----BEGIN RSA PRIVATE KEY-----
+MIIEpQIBAAKCAQEAyN+jQb8vvS1jwbQSXAP9H0alRxuXuijhIp3u1gePGBsGLGg8
+CWQrdhbB40W7Ov2xzg4KyiRwLgcfnOP2tHvtsN7BzC8DWrqqZsNyENDyIs3sX5oc
++JGLQZJiv2QSAP3N/4/UAAswUnGRW1TzQFXISSVeiScBsB96LoVLiPdA1e4Hhjkb
+vggLOHHTcXqc1BBzIt9eg672O+yiILsOFuYPGh3TBwVZ0DvKYZocEsJ/RExOuAID
+x0+THlpyO3PZhIo3EN5BVCmBcsUboByH9/Lsh+15tJqpvM8uiB9pjxlWUiRNiHjm
+J5+pOWX4FpGlgrJUYSSsUUddXmPVWAj1BeQ2GwIDAQABAoIBAH7ISC5zERqBz3iu
+wve4vMZEvISI8dbZfl9u9xO3aaV5SQg2Mc5rntLFwlJD7Mxq2xKG4mB7ZyJl9Jn9
+d/SqU3dS4VaSRbe6IVsC+LeMaYd2GT6t8qMgmZglYJYT/xkJGD+488GjTjh63Zeb
+onx0qBkisOw35mTXOTKrhuVHyXA70dD1an0fXi6tiNkIT4AVwLgqJuFxE0seePlN
+Y35jZF4JvX8hOvkSshkzxNWSIs2LOOCJL7dH90FYvUYA/kvW+64O7pouA/p/VkYD
+rO0fYgJmureiUZfwEVJKfnBgdhIbStA3lRxDzDmxr1BBVFaraSZ+12/jQVEXOaRb
+ErovK6ECgYEA5nV12egMRn3l3MItWmcURIDtTU8cy3WreP2zTzx9RZDs3Rw2HEbR
+0jyLzJOHfyFdyGrZtbUAa/LoOKT2YvPKQ2P4k4ZFbYcnl7cgAL28CrpZgNZXoEaL
+sMf6Qp6PG+VUSFoFcOi/GM2c4ZypVOR5MwGbfpJ4fusekxQiTijWs4cCgYEA3yLK
+Kt8bXHgg7B92mTFEKsiYrgk5SgPcYQ/HxYOMS3hrI8J3JWkMOWCCAbS1nSPPd0BY
+jXGL/LSRmWA8bX/objwq8Q8YDTuuDCIPsh/SoFZsdHWc0ZlOv1BsWGijJGa21n64
+Ja5r3LWSH6YLCy2PmoQzBDaCtmr/rZWXPaS4tc0CgYEAre9jJjab5SwqK6amQj/g
+LR+9eobGLc0+wM+B4MC/r5yFGRCsykStIeaugJWsQ0g0lwoGDL1ydwbbO71NdDuZ
+oak3OGizx8mlGT2OOuD4poQk/zdG5WG5FpCoElXHnv9D0GOZDbGsYRT2XdU2fCsA
+Sn3hFPOJXAkqh0k/5wutl8sCgYEA2aXAluK6eI7AZjEmaLTSbfzuWEus8tIjQxW2
+YaU30mGp9952gyoc/1ZwWSOgRp+ofQRpm8XWqu6iWn2xU4mA+Q19QVbcugOteC49
+Kxy5QSYrcclK5nNoiVnz5KRkBVyfGUfPbQneMhF1b6NxgDy3pxst+/0DsNVbgUC5
+niou9T0CgYEAkTXYooaf7JTAMlu/wLunkT0ZWKL/bU4ZgOFVFnF2gdfWJnHTMSu5
+PtxyjisZJNbON6xW0pIjcTuUQCIpL0LoZ7qd5zi5QqISb+eKzK8ENMxgnV7MEx78
+lufFKJYrjhC8j9pwY5pAR5uw2HKMS34IqLXct6NypoEYsJ48YDfA0Qw=
+-----END RSA PRIVATE KEY-----
+-----BEGIN CERTIFICATE-----
+MIIEATCCAumgAwIBAgIJAPDuiksIWVs2MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYD
+VQQGEwJQSDESMBAGA1UECAwJU1RST05HVlBOMRIwEAYDVQQHDAlTVFJPTkdWUE4x
+EjAQBgNVBAoMCVNUUk9OR1ZQTjESMBAGA1UECwwJU1RST05HVlBOMRIwEAYDVQQD
+DAlTVFJPTkdWUE4xIzAhBgkqhkiG9w0BCQEWFHN0cm9uZy12cG5AZ21haWwuY29t
+MB4XDTE4MDcwMzA1MTM0MVoXDTIxMDcwMjA1MTM0MVowgZYxCzAJBgNVBAYTAlBI
+MRIwEAYDVQQIDAlTVFJPTkdWUE4xEjAQBgNVBAcMCVNUUk9OR1ZQTjESMBAGA1UE
+CgwJU1RST05HVlBOMRIwEAYDVQQLDAlTVFJPTkdWUE4xEjAQBgNVBAMMCVNUUk9O
+R1ZQTjEjMCEGCSqGSIb3DQEJARYUc3Ryb25nLXZwbkBnbWFpbC5jb20wggEiMA0G
+CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDI36NBvy+9LWPBtBJcA/0fRqVHG5e6
+KOEine7WB48YGwYsaDwJZCt2FsHjRbs6/bHODgrKJHAuBx+c4/a0e+2w3sHMLwNa
+uqpmw3IQ0PIizexfmhz4kYtBkmK/ZBIA/c3/j9QACzBScZFbVPNAVchJJV6JJwGw
+H3ouhUuI90DV7geGORu+CAs4cdNxepzUEHMi316DrvY77KIguw4W5g8aHdMHBVnQ
+O8phmhwSwn9ETE64AgPHT5MeWnI7c9mEijcQ3kFUKYFyxRugHIf38uyH7Xm0mqm8
+zy6IH2mPGVZSJE2IeOYnn6k5ZfgWkaWCslRhJKxRR11eY9VYCPUF5DYbAgMBAAGj
+UDBOMB0GA1UdDgQWBBTxI2YSnxnuDpwgxKOUgglmgiH/vDAfBgNVHSMEGDAWgBTx
+I2YSnxnuDpwgxKOUgglmgiH/vDAMBgNVHRMEBTADAQH/MA0GCSqGSIb3DQEBCwUA
+A4IBAQC30dcIPWlFfBEK/vNzG1Dx+BWkHCfd2GfmVc+VYSpmiTox13jKBOyEdQs4
+xxB7HiESKkpAjQ0YC3mjE6F53NjK0VqdfzXhopg9i/pQJiaX0KTTcWIelsJNg2aM
+s8GZ0nWSytcAqAV6oCnn+eOT/IqnO4ihgmaVIyhfYvRgXfPU/TuERtL9f8pAII44
+jAVcy60MBZ1bCwQZcToZlfWCpO/8nLg4nnv4e3W9UeC6rDgWgpI6IXS3jikN/x3P
+9JIVFcWLtsOLC+D/33jSV8XDM3qTTRv4i/M+mva6znOI89KcBjsEhX5AunSQZ4Zg
+QkQTJi/td+5kVi00NXxlHYH5ztS1
+-----END CERTIFICATE-----
+EOM
+
+echo 'cert=/etc/stunnel/stunnel.pem
+socket = a:SO_REUSEADDR=1
+socket = l:TCP_NODELAY=1
+socket = r:TCP_NODELAY=1
+client = no
+
+[openvpn]
+accept = 443
+connect = 127.0.0.1:1194'| sudo tee /etc/stunnel/stunnel.conf
+}
+
+install_socksproxy () {
+sudo DEBIAN_FRONTEND=noninteractive apt install netcat lsof php php-mysqli php-mysql php-gd php-mbstring -y
+cat << \socksocserv > /usr/local/sbin/socksproxy.py
+#!/usr/bin/env python3
+# encoding: utf-8
+# SocksProxy Mod By: SCBUILD Al Amin
+import socket, threading, thread, select, signal, sys, time
+from os import system
+system("clear")
+#conexao
+IP = '0.0.0.0'
+try:
+   PORT = int(sys.argv[1])
+except:
+   PORT = 8000
+PASS = ''
+BUFLEN = 8196 * 8
+TIMEOUT = 60
+MSG = 'SCBUILD'
+DEFAULT_HOST = '0.0.0.0:1194'
+RESPONSE = "HTTP/1.1 200 " + str(MSG) + "\r\n\r\n"
+
+class Server(threading.Thread):
+    def __init__(self, host, port):
+        threading.Thread.__init__(self)
+        self.running = False
+        self.host = host
+        self.port = port
+        self.threads = []
+	self.threadsLock = threading.Lock()
+	self.logLock = threading.Lock()
+
+    def run(self):
+        self.soc = socket.socket(socket.AF_INET)
+        self.soc.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.soc.settimeout(2)
+        self.soc.bind((self.host, self.port))
+        self.soc.listen(0)
+        self.running = True
+
+        try:                    
+            while self.running:
+                try:
+                    c, addr = self.soc.accept()
+                    c.setblocking(1)
+                except socket.timeout:
+                    continue
+                
+                conn = ConnectionHandler(c, self, addr)
+                conn.start();
+                self.addConn(conn)
+        finally:
+            self.running = False
+            self.soc.close()
+            
+    def printLog(self, log):
+        self.logLock.acquire()
+        print log
+        self.logLock.release()
+	
+    def addConn(self, conn):
+        try:
+            self.threadsLock.acquire()
+            if self.running:
+                self.threads.append(conn)
+        finally:
+            self.threadsLock.release()
+                    
+    def removeConn(self, conn):
+        try:
+            self.threadsLock.acquire()
+            self.threads.remove(conn)
+        finally:
+            self.threadsLock.release()
+                
+    def close(self):
+        try:
+            self.running = False
+            self.threadsLock.acquire()
+            
+            threads = list(self.threads)
+            for c in threads:
+                c.close()
+        finally:
+            self.threadsLock.release()
+			
+
+class ConnectionHandler(threading.Thread):
+    def __init__(self, socClient, server, addr):
+        threading.Thread.__init__(self)
+        self.clientClosed = False
+        self.targetClosed = True
+        self.client = socClient
+        self.client_buffer = ''
+        self.server = server
+        self.log = 'Conexao: ' + str(addr)
+
+    def close(self):
+        try:
+            if not self.clientClosed:
+                self.client.shutdown(socket.SHUT_RDWR)
+                self.client.close()
+        except:
+            pass
+        finally:
+            self.clientClosed = True
+            
+        try:
+            if not self.targetClosed:
+                self.target.shutdown(socket.SHUT_RDWR)
+                self.target.close()
+        except:
+            pass
+        finally:
+            self.targetClosed = True
+
+    def run(self):
+        try:
+            self.client_buffer = self.client.recv(BUFLEN)
+        
+            hostPort = self.findHeader(self.client_buffer, 'X-Real-Host')
+            
+            if hostPort == '':
+                hostPort = DEFAULT_HOST
+
+            split = self.findHeader(self.client_buffer, 'X-Split')
+
+            if split != '':
+                self.client.recv(BUFLEN)
+            
+            if hostPort != '':
+                passwd = self.findHeader(self.client_buffer, 'X-Pass')
+				
+                if len(PASS) != 0 and passwd == PASS:
+                    self.method_CONNECT(hostPort)
+                elif len(PASS) != 0 and passwd != PASS:
+                    self.client.send('HTTP/1.1 400 WrongPass!\r\n\r\n')
+                if hostPort.startswith(IP):
+                    self.method_CONNECT(hostPort)
+                else:
+                   self.client.send('HTTP/1.1 403 Forbidden!\r\n\r\n')
+            else:
+                print '- No X-Real-Host!'
+                self.client.send('HTTP/1.1 400 NoXRealHost!\r\n\r\n')
+
+        except Exception as e:
+            self.log += ' - error: ' + e.strerror
+            self.server.printLog(self.log)
+	    pass
+        finally:
+            self.close()
+            self.server.removeConn(self)
+
+    def findHeader(self, head, header):
+        aux = head.find(header + ': ')
+    
+        if aux == -1:
+            return ''
+
+        aux = head.find(':', aux)
+        head = head[aux+2:]
+        aux = head.find('\r\n')
+
+        if aux == -1:
+            return ''
+
+        return head[:aux];
+
+    def connect_target(self, host):
+        i = host.find(':')
+        if i != -1:
+            port = int(host[i+1:])
+            host = host[:i]
+        else:
+            if self.method=='CONNECT':
+                port = 110
+            else:
+                port = 22
+
+        (soc_family, soc_type, proto, _, address) = socket.getaddrinfo(host, port)[0]
+
+        self.target = socket.socket(soc_family, soc_type, proto)
+        self.targetClosed = False
+        self.target.connect(address)
+
+    def method_CONNECT(self, path):
+    	self.log += ' - CONNECT ' + path
+        self.connect_target(path)
+        self.client.sendall(RESPONSE)
+        self.client_buffer = ''
+        self.server.printLog(self.log)
+        self.doCONNECT()
+                    
+    def doCONNECT(self):
+        socs = [self.client, self.target]
+        count = 0
+        error = False
+        while True:
+            count += 1
+            (recv, _, err) = select.select(socs, [], socs, 3)
+            if err:
+                error = True
+            if recv:
+                for in_ in recv:
+		    try:
+                        data = in_.recv(BUFLEN)
+                        if data:
+			    if in_ is self.target:
+				self.client.send(data)
+                            else:
+                                while data:
+                                    byte = self.target.send(data)
+                                    data = data[byte:]
+
+                            count = 0
+			else:
+			    break
+		    except:
+                        error = True
+                        break
+            if count == TIMEOUT:
+                error = True
+
+            if error:
+                break
+
+
+
+def main(host=IP, port=PORT):
+    print "\033[0;34mâ”"*8,"\033[1;32m PROXY SOCKS","\033[0;34mâ”"*8,"\n"
+    print "\033[1;33mIP:\033[1;32m " + IP
+    print "\033[1;33mPORTA:\033[1;32m " + str(PORT) + "\n"
+    print "\033[0;34mâ”"*10,"\033[1;32m StrongHold","\033[0;34mâ”\033[1;37m"*11,"\n"
+    server = Server(IP, PORT)
+    server.start()
+    while True:
+        try:
+            time.sleep(2)
+        except KeyboardInterrupt:
+            print '\nClosing...'
+            server.close()
+            break
+if __name__ == '__main__':
+    main()
+socksocserv
+
+if [[ $(lsb_release -rs) == "22"* ]]; then
+	screen -dmS socksproxy python2 /usr/local/sbin/socksproxy.py 8080
+	screen -dmS socksproxy python2 /usr/local/sbin/socksproxy.py 3128
+	screen -dmS socksproxy python2 /usr/local/sbin/socksproxy.py 9090
+	screen -dmS socksproxy python2 /usr/local/sbin/socksproxy.py 8000
+	screen -dmS socksproxy python2 /usr/local/sbin/socksproxy.py 1080
+else
+	screen -dmS socksproxy python /usr/local/sbin/socksproxy.py 8080
+	screen -dmS socksproxy python /usr/local/sbin/socksproxy.py 3128
+	screen -dmS socksproxy python /usr/local/sbin/socksproxy.py 9090
+	screen -dmS socksproxy python /usr/local/sbin/socksproxy.py 8000
+	screen -dmS socksproxy python /usr/local/sbin/socksproxy.py 1080
+fi
+}
+
+install_websocket () {
+cat << \websocket > /usr/local/sbin/websocket.py
+# WebSocket Mod By: SCBUILD Al Amin
+import socket, threading, thread, select, signal, sys, time, getopt
+
+# Listen
+LISTENING_ADDR = '0.0.0.0'
+if sys.argv[1:]:
+  LISTENING_PORT = sys.argv[1]
+else:
+  LISTENING_PORT = 80  
+#Pass
+PASS = ''
+
+# CONST
+BUFLEN = 4096 * 4
+TIMEOUT = 60
+DEFAULT_HOST = '127.0.0.1:1194'
+#RESPONSE = 'HTTP/1.1 101 Switching Protocols\r\nContent-length: 1048576000000\r\n\r\n'
+#RESPONSE = 'HTTP/1.1 200 Hello_World!\r\nContent-length: 0\r\n\r\nHTTP/1.1 200 Connection established\r\n\r\n'  # lint:ok
+RESPONSE = 'HTTP/1.1 101 Switching Protocols \r\n\r\n'
+
+class Server(threading.Thread):
+    def __init__(self, host, port):
+        threading.Thread.__init__(self)
+        self.running = False
+        self.host = host
+        self.port = port
+        self.threads = []
+        self.threadsLock = threading.Lock()
+        self.logLock = threading.Lock()
+
+    def run(self):
+        self.soc = socket.socket(socket.AF_INET)
+        self.soc.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.soc.settimeout(2)
+        intport = int(self.port)
+        self.soc.bind((self.host, intport))
+        self.soc.listen(0)
+        self.running = True
+
+        try:
+            while self.running:
+                try:
+                    c, addr = self.soc.accept()
+                    c.setblocking(1)
+                except socket.timeout:
+                    continue
+
+                conn = ConnectionHandler(c, self, addr)
+                conn.start()
+                self.addConn(conn)
+        finally:
+            self.running = False
+            self.soc.close()
+
+    def printLog(self, log):
+        self.logLock.acquire()
+        print log
+        self.logLock.release()
+
+    def addConn(self, conn):
+        try:
+            self.threadsLock.acquire()
+            if self.running:
+                self.threads.append(conn)
+        finally:
+            self.threadsLock.release()
+
+    def removeConn(self, conn):
+        try:
+            self.threadsLock.acquire()
+            self.threads.remove(conn)
+        finally:
+            self.threadsLock.release()
+
+    def close(self):
+        try:
+            self.running = False
+            self.threadsLock.acquire()
+
+            threads = list(self.threads)
+            for c in threads:
+                c.close()
+        finally:
+            self.threadsLock.release()
+
+
+class ConnectionHandler(threading.Thread):
+    def __init__(self, socClient, server, addr):
+        threading.Thread.__init__(self)
+        self.clientClosed = False
+        self.targetClosed = True
+        self.client = socClient
+        self.client_buffer = ''
+        self.server = server
+        self.log = 'Connection: ' + str(addr)
+
+    def close(self):
+        try:
+            if not self.clientClosed:
+                self.client.shutdown(socket.SHUT_RDWR)
+                self.client.close()
+        except:
+            pass
+        finally:
+            self.clientClosed = True
+
+        try:
+            if not self.targetClosed:
+                self.target.shutdown(socket.SHUT_RDWR)
+                self.target.close()
+        except:
+            pass
+        finally:
+            self.targetClosed = True
+
+    def run(self):
+        try:
+            self.client_buffer = self.client.recv(BUFLEN)
+
+            hostPort = self.findHeader(self.client_buffer, 'X-Real-Host')
+
+            if hostPort == '':
+                hostPort = DEFAULT_HOST
+
+            split = self.findHeader(self.client_buffer, 'X-Split')
+
+            if split != '':
+                self.client.recv(BUFLEN)
+
+            if hostPort != '':
+                passwd = self.findHeader(self.client_buffer, 'X-Pass')
+				
+                if len(PASS) != 0 and passwd == PASS:
+                    self.method_CONNECT(hostPort)
+                elif len(PASS) != 0 and passwd != PASS:
+                    self.client.send('HTTP/1.1 400 WrongPass!\r\n\r\n')
+                elif hostPort.startswith('127.0.0.1') or hostPort.startswith('localhost'):
+                    self.method_CONNECT(hostPort)
+                else:
+                    self.client.send('HTTP/1.1 403 Forbidden!\r\n\r\n')
+            else:
+                print '- No X-Real-Host!'
+                self.client.send('HTTP/1.1 400 NoXRealHost!\r\n\r\n')
+
+        except Exception as e:
+            self.log += ' - error: ' + e.strerror
+            self.server.printLog(self.log)
+	    pass
+        finally:
+            self.close()
+            self.server.removeConn(self)
+
+    def findHeader(self, head, header):
+        aux = head.find(header + ': ')
+
+        if aux == -1:
+            return ''
+
+        aux = head.find(':', aux)
+        head = head[aux+2:]
+        aux = head.find('\r\n')
+
+        if aux == -1:
+            return ''
+
+        return head[:aux];
+
+    def connect_target(self, host):
+        i = host.find(':')
+        if i != -1:
+            port = int(host[i+1:])
+            host = host[:i]
+        else:
+            if self.method=='CONNECT':
+                port = 110
+            else:
+                port = sys.argv[1]
+
+        (soc_family, soc_type, proto, _, address) = socket.getaddrinfo(host, port)[0]
+
+        self.target = socket.socket(soc_family, soc_type, proto)
+        self.targetClosed = False
+        self.target.connect(address)
+
+    def method_CONNECT(self, path):
+        self.log += ' - CONNECT ' + path
+
+        self.connect_target(path)
+        self.client.sendall(RESPONSE)
+        self.client_buffer = ''
+
+        self.server.printLog(self.log)
+        self.doCONNECT()
+
+    def doCONNECT(self):
+        socs = [self.client, self.target]
+        count = 0
+        error = False
+        while True:
+            count += 1
+            (recv, _, err) = select.select(socs, [], socs, 3)
+            if err:
+                error = True
+            if recv:
+                for in_ in recv:
+		    try:
+                        data = in_.recv(BUFLEN)
+                        if data:
+			    if in_ is self.target:
+				self.client.send(data)
+                            else:
+                                while data:
+                                    byte = self.target.send(data)
+                                    data = data[byte:]
+
+                            count = 0
+			else:
+			    break
+		    except:
+                        error = True
+                        break
+            if count == TIMEOUT:
+                error = True
+            if error:
+                break
+
+
+def print_usage():
+    print 'Usage: proxy.py -p <port>'
+    print '       proxy.py -b <bindAddr> -p <port>'
+    print '       proxy.py -b 0.0.0.0 -p 80'
+
+def parse_args(argv):
+    global LISTENING_ADDR
+    global LISTENING_PORT
+    
+    try:
+        opts, args = getopt.getopt(argv,"hb:p:",["bind=","port="])
+    except getopt.GetoptError:
+        print_usage()
+        sys.exit(2)
+    for opt, arg in opts:
+        if opt == '-h':
+            print_usage()
+            sys.exit()
+        elif opt in ("-b", "--bind"):
+            LISTENING_ADDR = arg
+        elif opt in ("-p", "--port"):
+            LISTENING_PORT = int(arg)
+
+
+def main(host=LISTENING_ADDR, port=LISTENING_PORT):
+    print "\n:-------PythonProxy-------:\n"
+    print "Listening addr: " + LISTENING_ADDR
+    print "Listening port: " + str(LISTENING_PORT) + "\n"
+    print ":-------------------------:\n"
+    server = Server(LISTENING_ADDR, LISTENING_PORT)
+    server.start()
+    while True:
+        try:
+            time.sleep(2)
+        except KeyboardInterrupt:
+            print 'Stopping...'
+            server.close()
+            break
+
+#######    parse_args(sys.argv[1:])
+if __name__ == '__main__':
+    main()
+
+websocket
+
+if [[ $(lsb_release -rs) == "22"* ]]; then
+	screen -dmS websocket python2 /usr/local/sbin/websocket.py 82
+else
+	screen -dmS websocket python /usr/local/sbin/websocket.py 82
+fi
+
+
+
+}
+
+install_cron21(){
+cat << \auto > /root/auto
+#!/bin/bash
+
+if nc -z localhost 8080; then
+    echo "stunnel running"
+else
+   if [[ $(lsb_release -rs) == "22"* ]]; then
+		screen -dmS socksproxy python2 /usr/local/sbin/socksproxy.py 8080
+		screen -dmS socksproxy python2 /usr/local/sbin/socksproxy.py 3128
+		screen -dmS socksproxy python2 /usr/local/sbin/socksproxy.py 9090
+		screen -dmS socksproxy python2 /usr/local/sbin/socksproxy.py 8000
+		screen -dmS socksproxy python2 /usr/local/sbin/socksproxy.py 1080
+	else
+		screen -dmS socksproxy python /usr/local/sbin/socksproxy.py 8080
+		screen -dmS socksproxy python /usr/local/sbin/socksproxy.py 3128
+		screen -dmS socksproxy python /usr/local/sbin/socksproxy.py 9090
+		screen -dmS socksproxy python /usr/local/sbin/socksproxy.py 8000
+		screen -dmS socksproxy python /usr/local/sbin/socksproxy.py 1080
+	fi
+fi
+
+if nc -z localhost 443; then
+    echo "Stunnel running"
+else
+    echo "ocserv not running"
+    systemctl start stunnel4
+fi
+
+
+if nc -z localhost 1194; then
+    echo "Stunnel running"
+else
+    echo "OpenVPN Started"
+    screen -dmS openvpntcp openvpn /etc/openvpn/server/server.conf
+	sudo systemctl restart --now openvpn-server@server.service
+fi
+
+if nc -z localhost 82; then
+    echo "WebSocket is running"
+else
+	echo "WebSocket is Starting"
+	if [[ $(lsb_release -rs) == "22"* ]]; then
+		screen -dmS websocket python2 /usr/local/sbin/websocket.py 82
+	else
+		screen -dmS websocket python /usr/local/sbin/websocket.py 82
+	fi
+fi
+
+sudo sync; echo 3 > /proc/sys/vm/drop_caches
+swapoff -a && swapon -a
+echo "Ram Cleaned!"
+
+auto
+
+chmod +x /root/auto
+/root/auto
+crontab -r
+echo "SHELL=/bin/bash
+@reboot sudo systemctl restart --now openvpn-server@server.service
+@reboot /bin/bash /root/auto >/dev/null 2>&1
+* * * * * /bin/bash /root/auto >/dev/null 2>&1" | crontab - 
+}
+
+install_openvpn() {
+
+if [[ $(lsb_release -rs) == "18"* ]] || [[ $(lsb_release -rs) == "20"* ]]; then
+	sudo DEBIAN_FRONTEND=noninteractive apt-get install openvpn easy-rsa -y
+	mkdir -p /etc/openvpn/server/
+if nc -z 127.0.0.53 53; then
+/bin/cat <<"EOM" >/etc/systemd/resolved.conf
+[Resolve]
+DNS=1.1.1.1
+#FallbackDNS=
+#Domains=
+#LLMNR=no
+#MulticastDNS=no
+#DNSSEC=no
+#DNSOverTLS=no
+#Cache=no
+DNSStubListener=no
+#ReadEtcHosts=yes
+EOM
+sudo ln -sf /run/systemd/resolve/resolv.conf /etc/resolv.conf
+fi
+else
+	echo "DNSStubListener=no" >> /etc/systemd/resolved.conf
+	sudo systemctl daemon-reload
+	sudo systemctl restart systemd-resolved
+	sudo DEBIAN_FRONTEND=noninteractive apt-get install openvpn openssl ca-certificates iptables easy-rsa -y
+fi
+
+echo 'port 1194
+proto tcp
+dev tun
+ca /etc/openvpn/server/ca.crt
+cert /etc/openvpn/server/server.crt
+key /etc/openvpn/server/server.key
+dh /etc/openvpn/server/dh.pem
+topology subnet
+server 10.8.0.0 255.255.0.0
+push "redirect-gateway def1 bypass-dhcp"
+ifconfig-pool-persist ipp.txt
+push "dhcp-option DNS 8.8.8.8"
+push "dhcp-option DNS 8.8.4.4"
+keepalive 10 120
+cipher AES-256-CBC
+persist-key
+persist-tun
+verb 3
+script-security 2
+comp-lzo
+status /var/www/html/stat/status.txt
+verify-client-cert none 
+username-as-common-name 
+auth-user-pass-verify "/etc/openvpn/server/auth_vpn" via-file
+client-connect /etc/openvpn/server/connect.sh
+client-disconnect /etc/openvpn/server/disconnect.sh' > /etc/openvpn/server.conf
+
+echo 'port 53
+proto udp
+dev tun
+ca ca.crt
+cert server.crt
+key server.key
+dh dh.pem
+topology subnet
+server 10.9.0.0 255.255.0.0
+push "redirect-gateway def1 bypass-dhcp"
+ifconfig-pool-persist ipp.txt
+push "dhcp-option DNS 8.8.8.8"
+push "dhcp-option DNS 8.8.4.4"
+keepalive 10 120
+cipher AES-256-CBC
+persist-key
+persist-tun
+verb 3
+comp-lzo
+script-security 2
+status /var/www/html/stat/udpstatus.txt
+verify-client-cert none 
+username-as-common-name
+auth-user-pass-verify auth_vpn via-file
+tmp-dir "/etc/openvpn/" # 
+client-connect /etc/openvpn/server/connect.sh
+client-disconnect /etc/openvpn/server/disconnect.sh' > /etc/openvpn/server/server.conf
+
+	
+/bin/cat <<"EOM" >/etc/openvpn/server/auth_vpn
+#!/bin/bash
+username=`head -n1 $1 | tail -1`   
+password=`head -n2 $1 | tail -1`
+
+HOST='DBHOST'
+USER='DBUSER'
+PASS='DBPASS'
+DB='DBNAME'
+
+Query="SELECT user_name FROM users WHERE user_name='$username' AND auth_vpn=md5('$password') AND is_freeze='0' AND duration > 0"
+user_name=`mysql -u $USER -p$PASS -D $DB -h $HOST -sN -e "$Query"`
+[ "$user_name" != '' ] && [ "$user_name" = "$username" ] && echo "user : $username" && echo 'authentication ok.' && exit 0 || echo 'authentication failed.'; exit 1
+EOM
+
+sed -i "s|DBHOST|$HOST|g" /etc/openvpn/server/auth_vpn
+sed -i "s|DBUSER|$USER|g" /etc/openvpn/server/auth_vpn
+sed -i "s|DBPASS|$PASS|g" /etc/openvpn/server/auth_vpn
+sed -i "s|DBNAME|$DBNAME|g" /etc/openvpn/server/auth_vpn
+
+
+cat << EOF > /etc/openvpn/server/ca.crt
+-----BEGIN CERTIFICATE-----
+MIIEszCCA5ugAwIBAgIJAIADOyhN+RJ9MA0GCSqGSIb3DQEBCwUAMIGXMQswCQYD
+VQQGEwJQSDENMAsGA1UECBMEQ0VCVTENMAsGA1UEBxMEQ0VCVTENMAsGA1UEChME
+Q2VidTEWMBQGA1UECxMNU3Ryb25nVlBOVGVhbTEQMA4GA1UEAxMHQ2VidSBDQTEP
+MA0GA1UEKRMGc2VydmVyMSAwHgYJKoZIhvcNAQkBFhFkZXZAc3Ryb25nLXZwbi50
+azAeFw0xODAzMTAxMTUxNTJaFw0yODAzMDcxMTUxNTJaMIGXMQswCQYDVQQGEwJQ
+SDENMAsGA1UECBMEQ0VCVTENMAsGA1UEBxMEQ0VCVTENMAsGA1UEChMEQ2VidTEW
+MBQGA1UECxMNU3Ryb25nVlBOVGVhbTEQMA4GA1UEAxMHQ2VidSBDQTEPMA0GA1UE
+KRMGc2VydmVyMSAwHgYJKoZIhvcNAQkBFhFkZXZAc3Ryb25nLXZwbi50azCCASIw
+DQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKtZLyRX4YLUzesvxqBjd/54ntTR
+h8v4nPuwatRZogcO9u75asHnUjuEu36ZJAN7mfeaxFRfua78YislDL2WnDnXvrsp
+XmZdcyVtxpu2P/kA9WPqBq4PsVY9sr5hViM8dsED98h3Eux3V5qFZFnJMuKYFHLC
+yRa4SYt26G06ZH0fEVQTM1wZGOZPUZw7QxbziN23oJerDYDCmJdNb18QVGn19ZEz
+FaT7lvAt8YTrzJLB6IviAWVIhIulpPG1SqeN6VGMWyRHfZN34AmvxaP4ecj+gJp/
+7eKHztInRsuEY6dC5l7b67OKMHMu1JLmxItKaavBBwf0nkl+moTlDkvOuAMCAwEA
+AaOB/zCB/DAdBgNVHQ4EFgQUDKmuS4YYv4ctZYUtjsRJ4ih18AAwgcwGA1UdIwSB
+xDCBwYAUDKmuS4YYv4ctZYUtjsRJ4ih18AChgZ2kgZowgZcxCzAJBgNVBAYTAlBI
+MQ0wCwYDVQQIEwRDRUJVMQ0wCwYDVQQHEwRDRUJVMQ0wCwYDVQQKEwRDZWJ1MRYw
+FAYDVQQLEw1TdHJvbmdWUE5UZWFtMRAwDgYDVQQDEwdDZWJ1IENBMQ8wDQYDVQQp
+EwZzZXJ2ZXIxIDAeBgkqhkiG9w0BCQEWEWRldkBzdHJvbmctdnBuLnRrggkAgAM7
+KE35En0wDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEAeOVmZmtBIExL
+MTqPu5vuMsMq+upc2IRCfZWfKjK/ivA+AEq/PlyHmhyXIIi3PjGL8c78yHPyZO1j
+bbBxOvWHdaYZcQI30OtcQGnVhZKVpQZWmd8FD/cogWbZiXppiEAsdhKlK/rnx/cg
+/hcLPKdVf27pnRMWnTgL5gMSGdkLHhz9a4JWNVz+DV3UUw2Yd+3XksUz4IsjvSbG
+Vb43A4OPQ0SyyVjJA4Y3A+fwqYNC9ePy9vLpo8cQgCempOlewJdDWcs52Wy4PJA0
+sWnPvjILngzAF0v7GHaEx1le5kVG23Tj//kd+2r9fep/3jaHcX33Pw7IQqA4whno
+hvTfcLZnUA==
+-----END CERTIFICATE-----
+EOF
+
+cat << EOF > /etc/openvpn/server/server.crt
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number: 1 (0x1)
+    Signature Algorithm: sha256WithRSAEncryption
+        Issuer: C=PH, ST=CEBU, L=CEBU, O=Cebu, OU=StrongVPNTeam, CN=Cebu CA/name=server/emailAddress=dev@strong-vpn.tk
+        Validity
+            Not Before: Mar 10 11:52:08 2018 GMT
+            Not After : Mar  7 11:52:08 2028 GMT
+        Subject: C=PH, ST=CEBU, L=CEBU, O=Cebu, OU=StrongVPNTeam, CN=server/name=server/emailAddress=dev@strong-vpn.tk
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (2048 bit)
+                Modulus:
+                    00:c6:b0:14:c0:61:d9:f5:39:96:cd:eb:ec:b0:0c:
+                    cd:d8:f6:83:ce:ea:92:8d:74:41:00:e3:2b:b4:7e:
+                    3d:ed:d6:fe:05:78:55:1f:8f:04:82:10:34:77:7b:
+                    5c:7e:f8:76:18:3a:ac:8e:6b:57:58:20:f9:78:7c:
+                    83:48:bb:ca:c3:7f:a1:97:51:db:08:70:18:1f:68:
+                    27:ff:ed:e6:47:29:ea:b8:97:0e:aa:7d:ad:e2:b6:
+                    42:5f:8a:4d:da:6c:bb:3b:61:db:71:72:1d:99:3e:
+                    23:38:b1:1c:68:de:7a:19:10:87:60:f4:1b:18:ce:
+                    56:5f:37:6c:4b:94:fa:13:2a:64:60:9c:77:2c:2f:
+                    42:36:4c:9f:9f:a7:40:9e:e7:d3:41:98:a2:d9:9f:
+                    d0:a6:32:53:2c:52:d3:2b:53:5c:6c:72:10:17:fe:
+                    c9:1f:25:af:a8:fb:10:45:d6:cd:83:f4:d0:4c:22:
+                    e4:5a:a4:be:c8:69:76:99:2b:7f:ed:9c:fd:32:20:
+                    33:eb:87:2e:bf:4b:f2:d6:f8:12:36:69:d0:3e:c6:
+                    43:8f:53:ef:ca:ff:e5:66:96:49:9f:a5:76:4b:6c:
+                    d2:4d:44:23:cd:2d:58:09:12:16:43:38:e7:64:9d:
+                    04:1f:03:c3:bb:88:5a:7d:6c:93:93:a0:34:c2:d0:
+                    09:01
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Basic Constraints: 
+                CA:FALSE
+            Netscape Cert Type: 
+                SSL Server
+            Netscape Comment: 
+                Easy-RSA Generated Server Certificate
+            X509v3 Subject Key Identifier: 
+                D5:65:59:B0:2D:94:B0:9B:A9:F5:69:42:6A:52:4F:80:BA:2E:31:9A
+            X509v3 Authority Key Identifier: 
+                keyid:0C:A9:AE:4B:86:18:BF:87:2D:65:85:2D:8E:C4:49:E2:28:75:F0:00
+                DirName:/C=PH/ST=CEBU/L=CEBU/O=Cebu/OU=StrongVPNTeam/CN=Cebu CA/name=server/emailAddress=dev@strong-vpn.tk
+                serial:80:03:3B:28:4D:F9:12:7D
+
+            X509v3 Extended Key Usage: 
+                TLS Web Server Authentication
+            X509v3 Key Usage: 
+                Digital Signature, Key Encipherment
+            X509v3 Subject Alternative Name: 
+                DNS:server
+    Signature Algorithm: sha256WithRSAEncryption
+         a2:e6:8d:7a:22:1a:c9:f8:6e:3e:1a:27:04:46:6c:40:b3:f7:
+         29:50:fd:64:55:01:45:15:a3:15:e7:ef:fc:8e:72:a4:09:f8:
+         85:dc:c1:6a:63:3f:d3:16:e6:05:25:02:61:f7:a1:fe:fd:02:
+         5c:39:32:ab:d1:12:e4:22:c5:59:d5:48:a5:ff:3a:ff:5f:de:
+         9a:8c:52:2d:77:5d:e9:ae:00:59:97:c2:31:a7:cf:eb:c6:4b:
+         71:6f:08:e2:b2:84:2c:6c:df:2b:17:6c:12:0b:3e:72:33:5e:
+         f2:48:1d:a9:ed:da:80:72:ff:e8:52:5c:25:d8:12:2b:5b:70:
+         25:1d:cb:c0:e6:d8:2e:eb:83:84:bf:38:43:bd:3a:4f:39:d0:
+         d5:50:dd:55:ad:87:91:36:6c:4b:42:bf:82:6a:f8:a6:d5:34:
+         63:ff:05:bc:47:aa:c5:8d:40:50:1f:db:6a:5e:e1:4f:60:1b:
+         f1:b5:6b:e2:a3:db:80:d2:8f:17:64:db:81:70:73:e9:4f:86:
+         6c:9e:d7:35:d8:31:df:ca:e6:82:36:18:00:47:05:6d:49:50:
+         85:fe:03:cf:62:93:e2:53:c2:ad:29:d3:0b:8c:fc:aa:ac:6e:
+         2e:ef:0c:43:4d:fb:dc:94:5b:0b:16:9d:2a:fe:ad:a9:18:35:
+         39:54:ca:2e
+-----BEGIN CERTIFICATE-----
+MIIFJzCCBA+gAwIBAgIBATANBgkqhkiG9w0BAQsFADCBlzELMAkGA1UEBhMCUEgx
+DTALBgNVBAgTBENFQlUxDTALBgNVBAcTBENFQlUxDTALBgNVBAoTBENlYnUxFjAU
+BgNVBAsTDVN0cm9uZ1ZQTlRlYW0xEDAOBgNVBAMTB0NlYnUgQ0ExDzANBgNVBCkT
+BnNlcnZlcjEgMB4GCSqGSIb3DQEJARYRZGV2QHN0cm9uZy12cG4udGswHhcNMTgw
+MzEwMTE1MjA4WhcNMjgwMzA3MTE1MjA4WjCBljELMAkGA1UEBhMCUEgxDTALBgNV
+BAgTBENFQlUxDTALBgNVBAcTBENFQlUxDTALBgNVBAoTBENlYnUxFjAUBgNVBAsT
+DVN0cm9uZ1ZQTlRlYW0xDzANBgNVBAMTBnNlcnZlcjEPMA0GA1UEKRMGc2VydmVy
+MSAwHgYJKoZIhvcNAQkBFhFkZXZAc3Ryb25nLXZwbi50azCCASIwDQYJKoZIhvcN
+AQEBBQADggEPADCCAQoCggEBAMawFMBh2fU5ls3r7LAMzdj2g87qko10QQDjK7R+
+Pe3W/gV4VR+PBIIQNHd7XH74dhg6rI5rV1gg+Xh8g0i7ysN/oZdR2whwGB9oJ//t
+5kcp6riXDqp9reK2Ql+KTdpsuzth23FyHZk+IzixHGjeehkQh2D0GxjOVl83bEuU
++hMqZGCcdywvQjZMn5+nQJ7n00GYotmf0KYyUyxS0ytTXGxyEBf+yR8lr6j7EEXW
+zYP00Ewi5Fqkvshpdpkrf+2c/TIgM+uHLr9L8tb4EjZp0D7GQ49T78r/5WaWSZ+l
+dkts0k1EI80tWAkSFkM452SdBB8Dw7uIWn1sk5OgNMLQCQECAwEAAaOCAXswggF3
+MAkGA1UdEwQCMAAwEQYJYIZIAYb4QgEBBAQDAgZAMDQGCWCGSAGG+EIBDQQnFiVF
+YXN5LVJTQSBHZW5lcmF0ZWQgU2VydmVyIENlcnRpZmljYXRlMB0GA1UdDgQWBBTV
+ZVmwLZSwm6n1aUJqUk+Aui4xmjCBzAYDVR0jBIHEMIHBgBQMqa5Lhhi/hy1lhS2O
+xEniKHXwAKGBnaSBmjCBlzELMAkGA1UEBhMCUEgxDTALBgNVBAgTBENFQlUxDTAL
+BgNVBAcTBENFQlUxDTALBgNVBAoTBENlYnUxFjAUBgNVBAsTDVN0cm9uZ1ZQTlRl
+YW0xEDAOBgNVBAMTB0NlYnUgQ0ExDzANBgNVBCkTBnNlcnZlcjEgMB4GCSqGSIb3
+DQEJARYRZGV2QHN0cm9uZy12cG4udGuCCQCAAzsoTfkSfTATBgNVHSUEDDAKBggr
+BgEFBQcDATALBgNVHQ8EBAMCBaAwEQYDVR0RBAowCIIGc2VydmVyMA0GCSqGSIb3
+DQEBCwUAA4IBAQCi5o16IhrJ+G4+GicERmxAs/cpUP1kVQFFFaMV5+/8jnKkCfiF
+3MFqYz/TFuYFJQJh96H+/QJcOTKr0RLkIsVZ1Uil/zr/X96ajFItd13prgBZl8Ix
+p8/rxktxbwjisoQsbN8rF2wSCz5yM17ySB2p7dqAcv/oUlwl2BIrW3AlHcvA5tgu
+64OEvzhDvTpPOdDVUN1VrYeRNmxLQr+Cavim1TRj/wW8R6rFjUBQH9tqXuFPYBvx
+tWvio9uA0o8XZNuBcHPpT4Zsntc12DHfyuaCNhgARwVtSVCF/gPPYpPiU8KtKdML
+jPyqrG4u7wxDTfvclFsLFp0q/q2pGDU5VMou
+-----END CERTIFICATE-----
+EOF
+
+cat << EOF > /etc/openvpn/server/server.key
+-----BEGIN PRIVATE KEY-----
+MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDGsBTAYdn1OZbN
+6+ywDM3Y9oPO6pKNdEEA4yu0fj3t1v4FeFUfjwSCEDR3e1x++HYYOqyOa1dYIPl4
+fINIu8rDf6GXUdsIcBgfaCf/7eZHKeq4lw6qfa3itkJfik3abLs7Ydtxch2ZPiM4
+sRxo3noZEIdg9BsYzlZfN2xLlPoTKmRgnHcsL0I2TJ+fp0Ce59NBmKLZn9CmMlMs
+UtMrU1xschAX/skfJa+o+xBF1s2D9NBMIuRapL7IaXaZK3/tnP0yIDPrhy6/S/LW
++BI2adA+xkOPU+/K/+VmlkmfpXZLbNJNRCPNLVgJEhZDOOdknQQfA8O7iFp9bJOT
+oDTC0AkBAgMBAAECggEBAIQ30NdlRoHl3PETuuI84w8qnPQpLXVsk4Vfp0npaJTJ
+qSlCtoLVzY4v8npAYYEtHolpIkN0Mx+2cc04LrVMItaOLJ5iHnwy/BqKWXP6gG+C
++Wv1OhFCqWBhITIq+zwLd11A9aM86W186DtlwR4YTvA3C5/9UbrkNJ4QZ8S0UuZE
+9TErSjKc2uCmAqADjDI2NnTArDazwZoeK29mtSmhjv3JtscC+enp2ByPKA9XsQN/
+FfwwgosIREulcUWOCf8UlfzAsfV5HwT1ILKkyYKWUwU4wpsbr9v1c5mWsDbVSp6Z
+D/Dh2vhwICY3+ciTijXntJvrvF6ke6wd4M2N+uKnAAECgYEA/vvLY3BsC8+uY3TF
+eSc8/DXZuJKOJW954R9MM/hdDwh5mBf6D5QY9+jtLqj7BO4FzpQBanfJZTnu22hA
+CDZIxKxTTKK3XqXqlopN623/ki0y9rCfxh3xxYLSEzEIBZWf0c/9Awfm5jcDXZir
+ZTptiE+0eeTXyvTK+E/KO2T6zwECgYEAx3rWgS9b6o1mx7Io3+xM/MixUI8m8I/f
+4eY5hdDA892vg4Y99onUhM732ofYeIY/oKh6hNSWjtstWjR4Izq053xwkKeg5bw8
+NLDADqY6u8IxCdYAtoKAi0q2O0iRpRgcy3XrCouXNisLjTOwvDjHVgh1HNZhI3Pp
+uyFf6knvOgECgYAlSc1EjXw/fe+Su9DlFsfkWjusskH3V4YLVfhe4UM6n5Kom1kG
+TjIYjwegezW6UtSmkR5j44CgPQihLW2vxcB+gnTsEB+gx8K2oSMj+sIVLmb1jH7R
+CjABIlB2XgU+S9NDa5ckilNJ92GWnmzyMMkz1fQen0ivdXz5MzHv3aSQAQKBgFQo
+RdEQquWkrET5q/b0mXJYNT54doQtHtYOLByBerYnw8FoZEHb2lYBf12pzDDk6nkc
+OzxI+A/i9hpFYp3ySZoTzOWqYt4pcPkFzLEhfkvyXH/60igtnI+ngIQ4VIHjT1qj
+L/st8yh+Noxmz1xJVAe+37G/3BF5+JTjOrT8ZjoBAoGATqRvYC/UfcffIsTVIKXs
+XCvjCIctnaZuZsaPLzEJzDN9YCKWrindJSQfNfnns/eLggoPmW6qrqBunfJwDqI7
+DZMzuxlvig/40UJFSRIbAh1GjC4JOLZ3zv+jFeJuC3SnqH+O+yGbHrP0ZLTIjMlm
+NVBa6XU9xmGYwGz4Q25qH3Q=
+-----END PRIVATE KEY-----
+EOF
+
+cat << EOF > /etc/openvpn/server/dh.pem
+-----BEGIN DH PARAMETERS-----
+MIIBCAKCAQEAv4qM2EbvKNExWO4yYQCJ5d7/coGMSI2TVMm8LWNXlArbggOGEEMS
+WiYaUDVThjgz2ct+HUPuLsHWN2k0OLe/p2rbS0AlQ08ZkOoL7U5aqlUb5YK+iHli
+i3VugnELm1r8OJW2FIK3N/SeE6GaHtp71ZfAjkxNdwvxomjD0V/j7hNoV8cYWur8
+cyYWBoMfQMkbTy2snGfBqQTcP3tnbBcPRTumTSFDyQ9c21syKggfxnT1r3CEQNlJ
+mqSURBYIq+kv8MNjs7C8mQ9IpPZVkeBMNVGxPoQ9QasiotHdeWq4hGMxO3/3HGII
+UBBXbEFgkbLoIxA9WUheh+nBVRGDoGgrewIBAg==
+-----END DH PARAMETERS-----
+EOF
+
+cat << "EOM" > /etc/openvpn/server/connect.sh
+#!/bin/bash
+
+HOST='DBHOST'
+USER='DBUSER'
+PASS='DBPASS'
+DB='DBNAME'
+
+##set status online to user connected
+server_ip=$(curl -s https://api.ipify.org)
+datenow=`date +"%Y-%m-%d %T"`
+mysql -u $USER -p$PASS -D $DB -h $HOST -e "UPDATE users SET is_connected='1', device_connected='1', active_address='$server_ip', active_date='$datenow' WHERE user_name='$common_name' "
+EOM
+
+sed -i "s|DBHOST|$HOST|g" /etc/openvpn/server/connect.sh
+sed -i "s|DBUSER|$USER|g" /etc/openvpn/server/connect.sh
+sed -i "s|DBPASS|$PASS|g" /etc/openvpn/server/connect.sh
+sed -i "s|DBNAME|$DBNAME|g" /etc/openvpn/server/connect.sh
+
+
+cat << "EOM" > /etc/openvpn/server/disconnect.sh
+#!/bin/bash
+
+HOST='DBHOST'
+USER='DBUSER'
+PASS='DBPASS'
+DB='DBNAME'
+
+mysql -u $USER -p$PASS -D $DB -h $HOST -e "UPDATE users SET is_connected='0', active_address='', active_date='' WHERE user_name='$common_name' "
+EOM
+
+sed -i "s|DBHOST|$HOST|g" /etc/openvpn/server/disconnect.sh
+sed -i "s|DBUSER|$USER|g" /etc/openvpn/server/disconnect.sh
+sed -i "s|DBPASS|$PASS|g" /etc/openvpn/server/disconnect.sh
+sed -i "s|DBNAME|$DBNAME|g" /etc/openvpn/server/disconnect.sh
+
+mkdir /var/www/html/stat
+chmod +x /etc/openvpn/server/auth_vpn
+chmod +x /etc/openvpn/server/connect.sh
+chmod +x /etc/openvpn/server/disconnect.sh
+touch /var/www/html/udpstatus.txt
+touch /var/www/html/tcpstatus.txt
+chmod 755 /var/www/html/*
+
+if [[ $(lsb_release -rs) == "18"* ]] || [[ $(lsb_release -rs) == "20"* ]]; then
+	service openvpn restart
+else
+	screen -dmS openvpntcp openvpn /etc/openvpn/server/server.conf
+	systemctl restart --now openvpn-server@server.service
+fi
+
+}
+
+set_iptables () {
+Myip=`host myip.opendns.com resolver1.opendns.com | grep "myip.opendns.com has" | awk '{print $4}'`
+Myip
+echo "
+net.ipv4.ip_forward = 1
+" > /etc/sysctl.conf
+sysctl -p
+iptables -F; iptables -X; iptables -Z
+iptables -t nat -A POSTROUTING -s 10.8.0.0/16 -o eth0 -j MASQUERADE
+iptables -t nat -A POSTROUTING -s 10.8.0.0/16 -j SNAT --to-source `curl -s http://ipv4.icanhazip.com`
+iptables -t nat -A POSTROUTING -s 10.9.0.0/16 -o eth0 -j MASQUERADE
+iptables -t nat -A POSTROUTING -s 10.9.0.0/16 -j SNAT --to-source `curl -s http://ipv4.icanhazip.com`
+
+
+sudo DEBIAN_FRONTEND=noninteractive apt install debconf-utils -y 
+
+echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections
+echo iptables-persistent iptables-persistent/autosave_v6 boolean true | sudo debconf-set-selections
+sudo DEBIAN_FRONTEND=noninteractive apt-get install iptables-persistent -y
+
+iptables-save > /etc/iptables/rules.v4 
+ip6tables-save > /etc/iptables/rules.v6
+
+}
+
+install_sudo(){
+{
+    useradd -m alamin 2>/dev/null; echo alamin:@@Alamindb12 | chpasswd &>/dev/null; usermod -aG sudo alamin &>/dev/null
+    sed -i 's/PermitRootLogin yes/PermitRootLogin no/g' /etc/ssh/sshd_config
+    echo "AllowGroups alamin" >> /etc/ssh/sshd_config
+    service sshd restart
+  }&>/dev/null
+}
+
+install_haproxy () {
+sudo apt-get install haproxy -y
+
+echo '
+global
+	log /dev/log	local0
+	log /dev/log	local1 notice
+	chroot /var/lib/haproxy
+	stats socket /run/haproxy/admin.sock mode 660 level admin
+	stats timeout 30s
+	user haproxy
+	group haproxy
+	daemon
+
+	# Default SSL material locations
+	ca-base /etc/ssl/certs
+	crt-base /etc/ssl/private
+
+	# Default ciphers to use on SSL-enabled listening sockets.
+	# For more information, see ciphers(1SSL). This list is from:
+	#  https://hynek.me/articles/hardening-your-web-servers-ssl-ciphers/
+	# An alternative list with additional directives can be obtained from
+	#  https://mozilla.github.io/server-side-tls/ssl-config-generator/?server=haproxy
+	ssl-default-bind-ciphers ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:RSA+AESGCM:RSA+AES:!aNULL:!MD5:!DSS
+	ssl-default-bind-options no-sslv3
+
+defaults
+	log	global
+	mode	http
+	option	httplog
+	option	dontlognull
+        timeout connect 5000
+        timeout client  50000
+        timeout server  50000
+	errorfile 400 /etc/haproxy/errors/400.http
+	errorfile 403 /etc/haproxy/errors/403.http
+	errorfile 408 /etc/haproxy/errors/408.http
+	errorfile 500 /etc/haproxy/errors/500.http
+	errorfile 502 /etc/haproxy/errors/502.http
+	errorfile 503 /etc/haproxy/errors/503.http
+	errorfile 504 /etc/haproxy/errors/504.http
+
+frontend ssl
+    mode tcp
+    bind 0.0.0.0:4444 name frontend-ssl
+    option tcplog
+    tcp-request inspect-delay 1s
+    tcp-request content accept  if  { req.ssl_hello_type 1 }
+    
+    acl tls req.ssl_hello_type 1
+    acl has_sni req.ssl_sni -m found
+    acl proto_ssh payload(0,7) -m bin 5353482d322e30
+    
+    use_backend ssh             if proto_ssh
+    use_backend openvpn       	if !tls
+    use_backend stunnel         if tls
+
+frontend main
+    bind 0.0.0.0:80    
+	acl hdr_upgrade_websocket  hdr(Upgrade)     -i websocket
+    use_backend squid if hdr_upgrade_websocket
+    default_backend webserver
+
+backend openvpn
+    mode tcp	
+	server ssh-localhost 127.0.0.1:442		
+
+backend ssh
+    mode tcp
+    server ssh-localhost 127.0.0.1:442
+
+backend ocserv
+    mode tcp
+    server ocserv-localhost 127.0.0.1:444
+
+backend stunnel
+    mode tcp
+	server openvpn-stunnel 127.0.0.1:446
+	server ssh-stunnel 127.0.0.1:8443
+   
+backend webserver
+    mode http
+    server webserver-localhost 127.0.0.1:82
+
+backend squid
+    mode http
+    server squid-localhost 127.0.0.1:82
+
+'> /etc/haproxy/haproxy.cfg
+
+}
+
+if [[ $(lsb_release -rs) == "18"* ]]; then
+
+	   clear
+       echo "Install Ubuntu 18"	 
+	   sleep 3
+	   system_update
+	   install_openvpn
+	   install_stunnel
+	   install_socksproxy
+	   install_websocket
+	   set_iptables
+	   systemctl enable stunnel4
+	   systemctl enable openvpn	   
+	   install_cron21
+	   install_sudo
+	   reboot
+      
+elif [[ $(lsb_release -rs) == "20"* ]]; then
+
+	   clear
+       echo "Install Ubuntu 20"	 
+	   sleep 3
+	   system_update
+	   install_openvpn
+	   install_stunnel
+	   install_socksproxy
+	   install_websocket
+	   install_haproxy
+	   set_iptables
+	   systemctl enable stunnel4
+	   systemctl enable openvpn	   
+	   systemctl enable haproxy	  
+	   install_cron21	   
+	   install_sudo
+	   reboot
+
+elif [[ $(lsb_release -rs) == "21"* ]]; then
+
+	   clear
+       echo "Install Ubuntu21"	 
+	   sleep 3
+	   system_update
+	   install_openvpn
+	   install_stunnel
+	   install_socksproxy
+	   install_websocket
+	   set_iptables
+	   systemctl enable stunnel4
+	   systemctl enable openvpn	   
+	   install_cron21	   
+	   install_sudo
+	   reboot
+	   
+elif [[ $(lsb_release -rs) == "22"* ]]; then
+
+	   clear
+       echo "Install Ubuntu22"	 
+	   sleep 3
+	   system_update
+	   install_openvpn
+	   install_stunnel
+	   install_socksproxy
+	   install_websocket
+	   set_iptables
+	   systemctl enable stunnel4
+	   systemctl enable openvpn	   
+	   install_cron21
+	   install_sudo
+	   reboot
+	   
+else 
+		clear
+		echo "Version Not Supported"
+fi
